@@ -1,6 +1,8 @@
 package lk.sliit.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -30,6 +32,7 @@ public class Category implements Serializable{
 
     private String description;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "categories")
     private Set<ServiceProvider> serviceProviders;
 

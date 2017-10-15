@@ -1,5 +1,6 @@
 package lk.sliit.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -23,13 +24,14 @@ public class ServiceProvider implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "service_provider_categories",
             joinColumns = @JoinColumn(name="service_provider_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name ="category_id", referencedColumnName = "id")
     )
     private Set<Category> categories;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "credential_id")
     private Credential credential;

@@ -1,7 +1,6 @@
 package lk.sliit.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,24 +14,21 @@ import java.util.Set;
  * Created by Lanil Marasinghe on 15-Oct-17.
  */
 @Entity
-@Table(name = "categories")
+@Table(name = "service_providers")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt", "updatedAt"},
         allowGetters = true)
-public class Category implements Serializable{
+public class ServiceProvider implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    @Column(unique = true)
-    private String name;
-
-    private String description;
-
-    @ManyToMany(mappedBy = "categories")
-    private Set<ServiceProvider> serviceProviders;
-
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "service_provider_categories",
+            joinColumns = @JoinColumn(name="service_provider_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name ="category_id", referencedColumnName = "id")
+    )
+    private Set<Category> categories;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -52,22 +48,6 @@ public class Category implements Serializable{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -84,11 +64,11 @@ public class Category implements Serializable{
         this.updatedAt = updatedAt;
     }
 
-    public Set<ServiceProvider> getServiceProviders() {
-        return serviceProviders;
+    public Set<Category> getCategories() {
+        return categories;
     }
 
-    public void setServiceProviders(Set<ServiceProvider> serviceProviders) {
-        this.serviceProviders = serviceProviders;
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 }

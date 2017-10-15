@@ -42,6 +42,9 @@ public class Credential implements Serializable{
     @NotBlank
     private String contactNo;
 
+    @NotBlank
+    private String email;
+
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
@@ -122,5 +125,13 @@ public class Credential implements Serializable{
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

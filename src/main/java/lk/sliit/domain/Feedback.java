@@ -1,29 +1,38 @@
 package lk.sliit.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Lanil Marasinghe on 15-Oct-17.
  */
 @Entity
-@Table(name = "users")
+@Table(name = "feedback")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt", "updatedAt"},
         allowGetters = true)
-public class User implements Serializable{
+public class Feedback {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
+    private String title;
+
+    @Enumerated(EnumType.STRING)
+    private Rating rating;
+
+    private String comment;
+
     @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "credential_id")
+    @JoinColumn(name = "user_id")
     private Credential credential;
 
     @Column(nullable = false, updatable = false)
@@ -36,12 +45,28 @@ public class User implements Serializable{
     @LastModifiedDate
     private Date updatedAt;
 
-    public Long getId() {
-        return id;
+    public String getTitle() {
+        return title;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Rating getRating() {
+        return rating;
+    }
+
+    public void setRating(Rating rating) {
+        this.rating = rating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Date getCreatedAt() {

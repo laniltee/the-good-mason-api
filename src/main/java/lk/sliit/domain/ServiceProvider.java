@@ -1,5 +1,6 @@
 package lk.sliit.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -8,20 +9,29 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by Lanil Marasinghe on 15-Oct-17.
  */
 @Entity
-@Table(name = "users")
+@Table(name = "service_providers")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt", "updatedAt"},
         allowGetters = true)
-public class User implements Serializable{
+public class ServiceProvider implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "service_provider_categories",
+            joinColumns = @JoinColumn(name="service_provider_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name ="category_id", referencedColumnName = "id")
+    )
+    private Set<Category> categories;
+
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "credential_id")
     private Credential credential;
@@ -58,6 +68,14 @@ public class User implements Serializable{
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     public Credential getCredential() {

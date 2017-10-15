@@ -1,37 +1,38 @@
 package lk.sliit.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Created by Lanil Marasinghe on 15-Oct-17.
  */
 @Entity
-@Table(name = "service_providers")
+@Table(name = "feedback")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt", "updatedAt"},
         allowGetters = true)
-public class ServiceProvider implements Serializable{
+public class Feedback {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "service_provider_categories",
-            joinColumns = @JoinColumn(name="service_provider_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name ="category_id", referencedColumnName = "id")
-    )
-    private Set<Category> categories;
+    @NotBlank
+    private String title;
+
+    @Enumerated(EnumType.STRING)
+    private Rating rating;
+
+    private String comment;
 
     @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "credential_id")
+    @JoinColumn(name = "user_id")
     private Credential credential;
 
     @Column(nullable = false, updatable = false)
@@ -44,12 +45,28 @@ public class ServiceProvider implements Serializable{
     @LastModifiedDate
     private Date updatedAt;
 
-    public Long getId() {
-        return id;
+    public String getTitle() {
+        return title;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Rating getRating() {
+        return rating;
+    }
+
+    public void setRating(Rating rating) {
+        this.rating = rating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Date getCreatedAt() {
@@ -66,14 +83,6 @@ public class ServiceProvider implements Serializable{
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Set<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
     }
 
     public Credential getCredential() {
